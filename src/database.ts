@@ -18,6 +18,19 @@ export default class Record {
     } catch (e) {
       console.error(e);
     }
+    if (
+      this.database
+        .prepare(
+          "select count(*) from sqlite_master where type='table' and name='contaier"
+        )
+        .get() == 0
+    ) {
+      this.database
+        .prepare(
+          "CREATE TABLE container (uuid integer,container string,start integer,end integer,primary key(uuid))"
+        )
+        .run();
+    }
   }
   queryContainer(uuid: string): object {
     return this.query.get(uuid);
