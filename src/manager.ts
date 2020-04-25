@@ -3,10 +3,13 @@ class Manager {
   fun() {
     let d = new data();
     d.queryContainer("1");
-    console.log(d.queryAll());
-    let a = (Math.random() * 10000).toFixed();
+    let res = d.queryAll();
+    res.forEach((element) => {
+      console.log(element);
+    });
+    let a = (Math.random() * 1000).toFixed();
     console.log(a);
-    d.grantContainer(a, 3000);
+    d.grantContainer(a, 1000 * 60);
   }
 }
 let a = new Manager();

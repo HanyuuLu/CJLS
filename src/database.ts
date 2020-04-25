@@ -21,7 +21,7 @@ export default class Record {
     if (
       this.database
         .prepare(
-          "select count(*) from sqlite_master where type='table' and name='contaier"
+          "select count(*) from sqlite_master where type='table' and name='contaier'"
         )
         .get() == 0
     ) {
@@ -35,15 +35,20 @@ export default class Record {
   queryContainer(uuid: string): object {
     return this.query.get(uuid);
   }
-  queryAll(): object {
-    return this.database.prepare("select * from container").get();
+  queryAll(): Array<Object> {
+    this.gc();
+    return this.database.prepare("select * from container").all();
   }
   grantContainer(uuid: string, time: number) {
+    this.gc();
     let now = Date.now();
     this.database
       .prepare(
         "insert into container (uuid,container,start,end) values(?,?,?,?)"
       )
       .run(uuid, "demoIP", now, now + time);
+  }
+  gc() {
+    this.database.prepare("delete from container where end<?").run(Date.now());
   }
 }
