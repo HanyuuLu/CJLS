@@ -12,8 +12,8 @@ export default class Record {
   _user_add: sqlite3.Statement;
   _user_update: sqlite3.Statement;
   _user_delete: sqlite3.Statement;
-  _user_queryByUUID: sqlite3.Statement;
-  _user_queryAll: sqlite3.Statement;
+  // _user_queryByUUID: sqlite3.Statement;
+  // _user_queryAll: sqlite3.Statement;
   constructor() {
     // try {
     //   if (!fs.existsSync(DATABASE_FILE)) {
@@ -70,8 +70,19 @@ export default class Record {
       where end<?
     `);
     this._user_add = this.database.prepare(`
-      insert into user
-    `)
+      insert into user 
+      (uuid,username,level,lastused) values
+      (?,?,0,${Date.now()})
+    `);
+    this._user_update = this.database.prepare(`
+      update user set
+      username = ?
+      where uuid = ?
+    `);
+    this._user_delete = this.database.prepare(`
+      delete from user
+      where uuid = ?
+    `);
   }
   queryContainer(uuid: string): object {
     return this._container_query.get(uuid);
