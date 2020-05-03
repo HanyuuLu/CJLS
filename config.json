@@ -1,0 +1,14 @@
+{
+  "country": "cn",
+  "defaultAddress": "registry.cn-hangzhou.aliyuncs.com/hanyuulu/jupyterlab:latest",
+  "imageList": [
+    {
+      "country": "cn",
+      "address": "registry.cn-hangzhou.aliyuncs.com/hanyuulu/jupyterlab:latest"
+    },
+    {
+      "country": "default",
+      "address": "hanyuufurude/jupyterlab:latest"
+    }
+  ]
+}
