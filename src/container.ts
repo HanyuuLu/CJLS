@@ -27,7 +27,7 @@ class Container {
           }
         }
       }
-      console.warn(`image ${container.imageName} don't exists, pulling...`);
+      console.warn(`image [${container.imageName}] don't exists, pulling...`);
       container.docker.pull(container.imageName as string, function(
         err: ExceptionInformation,
         info: Stream
@@ -35,7 +35,8 @@ class Container {
         if (err) {
           throw err.toString();
         }
-        console.log(info.toString());
+        console.log(info);
+        console.log(`pulling image [${container.imageName}] success`);
       });
     });
   }
@@ -52,6 +53,7 @@ class Container {
     //   console.log(err);
     //   console.log(data?.toString());
     // });
+    // this.docker.run(this.imageName,[],)
   }
 }
 

@@ -36,7 +36,8 @@ export default class Record {
         (
           uuid      integer primary key,
           username  text,
-          level     integer not null default 0,
+          role      integer not null default 0,
+          access    string default '[]'
           lastused  integer
         );
       commit;
