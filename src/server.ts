@@ -1,5 +1,5 @@
 import Fastify from "fastify";
-import { routes } from "./user";
+import { routes } from "./router";
 const PORT = 9001;
 const ADDRESS = "0.0.0.0";
 const server = Fastify({ logger: true });
