@@ -7,10 +7,8 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Launch via NPM",
-      "runtimeExecutable": "npm",
-      "runtimeArgs": ["run-script", "runserver"],
-      "port": 9229,
+      "name": "server",
+      "program": "${workspaceFolder}/dist/server.js",
       "skipFiles": ["<node_internals>/**"]
     },
 
