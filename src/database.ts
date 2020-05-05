@@ -15,13 +15,6 @@ export default class Record {
   // _user_queryByUUID: sqlite3.Statement;
   // _user_queryAll: sqlite3.Statement;
   constructor() {
-    // try {
-    //   if (!fs.existsSync(DATABASE_FILE)) {
-    //     fs.close(fs.openSync(DATABASE_FILE, "w"), null);
-    //   }
-    // } catch (e) {
-    //   console.error(e);
-    // }
     this.database = sqlite3(DATABASE_FILE);
     this.database.exec(`
       begin;
@@ -37,7 +30,7 @@ export default class Record {
           uuid      integer primary key,
           username  text,
           role      integer not null default 0,
-          access    string default '[]'
+          access    string default '[]',
           lastused  integer
         );
       commit;
@@ -85,13 +78,25 @@ export default class Record {
       where uuid = ?
     `);
   }
+  /**
+   * @argument uuid
+   * @description 查询uuid对应用户的容器记录
+   */
   queryContainer(uuid: string): object {
     return this._container_query.get(uuid);
   }
+  /**
+   * @argument
+   * @description 查询所有容器（管理员用）
+   */
   queryAll(): Array<Object> {
     this.gc();
     return this._container_queryAll.all();
   }
+  /**
+   * @argument uuid:string,address:string,time:number
+   * @description 为uuid对应用户分配可用时长为time的容器，并返回容器访问地址
+   */
   grantContainer(uuid: string, address: string, time: number): boolean {
     this.gc();
     if (this._container_queryCountByUUID.get(uuid).count === 0) {
@@ -101,6 +106,10 @@ export default class Record {
     }
     return false;
   }
+  /**
+   * @argument
+   * @description 清理过期容器
+   */
   gc() {
     this._container_gc.run(Date.now());
   }

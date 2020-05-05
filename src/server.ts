@@ -4,9 +4,6 @@ const PORT = 9001;
 const ADDRESS = "0.0.0.0";
 const server = Fastify({ logger: true });
 
-// server.get("/", (req, res) => {
-//   res.code(200).send({ response: "alive" });
-// });
 server.register(routes);
 server.listen(PORT, ADDRESS, (err, address) => {
   if (err) {

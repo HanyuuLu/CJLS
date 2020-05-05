@@ -4,9 +4,9 @@ import { Stream } from "stream";
 class Container {
   docker: Docker;
   contianerList: Array<Docker.Container>;
-  imageName: string | undefined;
+  imageName: string;
   constructor() {
-    this.imageName = undefined;
+    this.imageName = "";
     try {
       let config = JSON.parse(fs.readFileSync("config.json").toString());
       // console.log(config);
@@ -17,7 +17,7 @@ class Container {
     }
     this.docker = new Docker();
     this.contianerList = [];
-    this.docker.listImages(function(err, info: Array<any>) {
+    this.docker.listImages(function (err, info: Array<any>) {
       if (err) console.log(err);
       for (var i = 0; i < info.length; ++i) {
         for (var tag in info[i]["RepoTags"]) {
@@ -28,7 +28,7 @@ class Container {
         }
       }
       console.warn(`image [${container.imageName}] don't exists, pulling...`);
-      container.docker.pull(container.imageName as string, function(
+      container.docker.pull(container.imageName as string, function (
         err: ExceptionInformation,
         info: Stream
       ) {
@@ -41,7 +41,7 @@ class Container {
     });
   }
   run() {
-    this.contianerList.push(this.docker.getContainer("4d3e6a4e7bf8"));
+    // this.contianerList.push(this.docker.getContainer("4d3e6a4e7bf8"));
     // this.contianerList[0].start(function(err, data) {
     //   if (err) {
     //     console.log(err);
@@ -54,6 +54,16 @@ class Container {
     //   console.log(data?.toString());
     // });
     // this.docker.run(this.imageName,[],)
+    this.docker.run(this.imageName, [],
+      fs.createWriteStream('log.log'), (err: ExceptionInformation, data: Stream, container: Docker.Container) => {
+        container.remove();
+      })
+    this.docker.run('ubuntu', ['bash', '-c', 'uname -a'], process.stdout).then((data) => {
+      console.log(data[1].id);
+      console.log('a');
+      return data[1].remove();
+    });
+    // this.docker.listContainers().then((e) => { console.log(e) })
   }
 }
 

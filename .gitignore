@@ -1,4 +1,5 @@
 node_modules
 dist
-container.db
+**.db
+*.log
 docs

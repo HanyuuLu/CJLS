@@ -20,9 +20,8 @@ const SchemaUpdate = {
     body: {
       type: "object",
       properties: {
+        token: { type: "string" },
         username: { type: "string" },
-        password: { type: "string" },
-        registercode: { type: "string" },
       },
     },
   },
@@ -45,17 +44,7 @@ const SchemaDelete = {
     body: {
       type: "object",
       properties: {
-        uuid: { tpye: "string" },
-      },
-    },
-  },
-};
-//查询用户
-const SchemaUser = {
-  schema: {
-    body: {
-      type: "object",
-      properties: {
+        token: { type: "string" },
         uuid: { tpye: "string" },
       },
     },
@@ -67,13 +56,12 @@ const SchemaMe = {
     body: {
       type: "object",
       properties: {
-        uuid: { tpye: "string" },
         token: { type: "string" },
       },
     },
   },
 };
-//查询自身用户信息
+//获取容器链接
 const SchemaServer = {
   schema: {
     body: {
@@ -107,11 +95,11 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   /**
    * @event 用户登录账号
    */
-  server.get(`${userroot}/login`, SchemaLogin, (req, res) => {
+  server.post(`${userroot}/login`, SchemaLogin, (req, res) => {
     res.code(200).send({
       info: "success",
       token: "1234567890",
-      username: "InuiToko",
+      username: `${req.body.username}`,
     });
   });
   /**
@@ -126,8 +114,10 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   /**
    * @event 用户查看其他用户信息
    */
-  server.get(`${userroot}/user/:uuid`, SchemaUser, (req, res) => {
+  server.get(`${userroot}/u/:uuid`, (req, res) => {
+    console.log(req.params);
     res.code(200).send({
+      uuid: req.params.uuid,
       username: "InuiToko",
       role: "2",
     });
@@ -135,8 +125,9 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   /**
    * @event 用户获取自身用户信息
    */
-  server.get(`${userroot}/me`, SchemaMe, (req, res) => {
+  server.post(`${userroot}/u`, SchemaMe, (req, res) => {
     res.code(200).send({
+      uuid: `${req.body.token}对应的uuid`,
       username: "InuiToko",
       role: "2",
       access: `["course1","course2"]`,
@@ -146,10 +137,10 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   /**
    * @event 用户获取（开启/重新获取）沙箱
    */
-  server.get(`${containerroot}/`, SchemaServer, (req, res) => {
+  server.get(`${containerroot}/:token`, (req, res) => {
     res.code(200).send({
       address: "https://demo.com/skjdfasdkfh",
-      token: "9283rsbdfka",
+      token: `${req.params.token}`,
       starttime: 298342,
       endtime: 298374,
     });
