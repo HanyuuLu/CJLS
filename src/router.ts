@@ -1,4 +1,5 @@
 import fastify from "fastify";
+import manager from './manager';
 const userroot = "/api/user";
 const containerroot = "/api/server";
 //用户注册

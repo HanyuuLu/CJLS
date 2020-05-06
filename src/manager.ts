@@ -1,19 +1,20 @@
-import Database from "./database";
+import database from "./database";
 import { container } from "./container";
 class Manager {
-  database: Database;
   constructor() {
-    this.database = new Database();
+  }
+  registerUser() {
+    database.
   }
   grantNewContainer(uuid: string) {
-    this.database.grantContainer(uuid, '111', 1000);
-    return this.database.queryContainer(uuid);
+    database.grantContainer(uuid, '111', 1000);
+    return database.queryContainer(uuid);
   }
   queryContainer(uuid: string) {
-    return this.database.queryContainer(uuid);
+    return database.queryContainer(uuid);
   }
   gc() {
-    this.database.gc();
+    database.gc();
   }
   fun() {
     // let d = new data();
@@ -28,5 +29,4 @@ class Manager {
     container.run();
   }
 }
-let a = new Manager();
-a.grantNewContainer('1');
+export default new Manager();

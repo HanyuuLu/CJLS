@@ -1,7 +1,7 @@
 import sqlite3 from "better-sqlite3";
 import fs from "fs";
 const DATABASE_FILE = "server.db";
-export default class Record {
+class Record {
   database: sqlite3.Database;
   _container_query: sqlite3.Statement;
   _container_grant: sqlite3.Statement;
@@ -28,6 +28,7 @@ export default class Record {
       create table if not exists user
         (
           uuid      integer primary key,
+          password  string,
           username  text,
           role      integer not null default 0,
           access    string default '[]',
@@ -65,12 +66,13 @@ export default class Record {
     `);
     this._user_add = this.database.prepare(`
       insert into user 
-      (uuid,username,level,lastused) values
-      (?,?,0,${Date.now()})
+      (uuid,password,username,level,lastused) values
+      (?,?,?,0,${Date.now()})
     `);
     this._user_update = this.database.prepare(`
       update user set
       username = ?
+      password = ?
       where uuid = ?
     `);
     this._user_delete = this.database.prepare(`
@@ -78,6 +80,17 @@ export default class Record {
       where uuid = ?
     `);
   }
+  /**
+   * @argument uuid: string, username: string, password: string
+   * @description 获得许可用户注册（初始化）
+   */
+  registerUser(uuid: string, username: string, password: string) {
+    this._user_update.run(username, password, uuid);
+  }
+
+  /**
+   * @argument
+   */
   /**
    * @argument uuid
    * @description 查询uuid对应用户的容器记录
@@ -114,3 +127,4 @@ export default class Record {
     this._container_gc.run(Date.now());
   }
 }
+export default new Record();
