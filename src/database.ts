@@ -65,13 +65,13 @@ class Record {
       where end<?
     `);
     this._user_add = this.database.prepare(`
-      insert into user 
-      (uuid,password,username,level,lastused) values
-      (?,?,?,0,${Date.now()})
+      insert into user
+      (uuid,username,role,access,lastused) values
+      (?,?,?,?,?);
     `);
     this._user_update = this.database.prepare(`
       update user set
-      username = ?
+      username = ?,
       password = ?
       where uuid = ?
     `);

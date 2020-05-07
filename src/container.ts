@@ -18,12 +18,16 @@ class Container {
     this.docker = new Docker();
     this.contianerList = [];
     this.docker.listImages(function (err, info: Array<any>) {
-      if (err) console.log(err);
-      for (var i = 0; i < info.length; ++i) {
-        for (var tag in info[i]["RepoTags"]) {
-          if (info[i]["RepoTags"][tag] == container.imageName) {
-            console.log(`image [${container.imageName}] ready.`);
-            return;
+      if (err) {
+        console.log(err.toString());
+      }
+      else {
+        for (var i = 0; i < info.length; ++i) {
+          for (var tag in info[i]["RepoTags"]) {
+            if (info[i]["RepoTags"][tag] == container.imageName) {
+              console.log(`image [${container.imageName}] ready.`);
+              return;
+            }
           }
         }
       }

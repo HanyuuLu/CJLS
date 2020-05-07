@@ -1,5 +1,5 @@
 import fastify from "fastify";
-import manager from './manager';
+import manager from "./manager";
 const userroot = "/api/user";
 const containerroot = "/api/server";
 //用户注册
@@ -85,6 +85,12 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户注册账号
    */
   server.post(`${userroot}/register`, SchemaRegister, (req, res) => {
+    console.log(req.body.registercode);
+    manager.registerUser(
+      req.body.registercode,
+      req.body.username,
+      req.body.password
+    );
     res.code(200).send({ info: "success:" });
   });
   /**
