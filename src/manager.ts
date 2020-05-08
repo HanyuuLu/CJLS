@@ -9,6 +9,11 @@ class Manager {
     console.log(Date.now());
     database.registerUser(src.uuid, username, password);
   }
+  updateUser(token: string, username: string, password: string) {
+    let src = Token.verify(token) as any;
+    console.log(src);
+    database.
+  }
   grantNewContainer(uuid: string) {
     database.grantContainer(uuid, "111", 1000);
     return database.queryContainer(uuid);

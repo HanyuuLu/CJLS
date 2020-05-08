@@ -97,6 +97,8 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户更新用户信息
    */
   server.post(`${userroot}/update`, SchemaUpdate, (req, res) => {
+    console.log(req.body.token);
+    manager.
     res.code(200).send({ info: "success" });
   });
   /**

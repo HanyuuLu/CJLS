@@ -81,16 +81,21 @@ class Record {
     `);
   }
   /**
-   * @argument uuid: string, username: string, password: string
+   * @argument uuid 用户uuid
+   * @argument password 用户密码哈希
    * @description 获得许可用户注册（初始化）
    */
   registerUser(uuid: string, username: string, password: string) {
+    this.updateUser(uuid, username, password);
+  }
+  /**
+   * @argument uuid 用户uuid
+   * @argument password 用户密码哈希
+   * @description 更新用户信息
+   */
+  updateUser(uuid: string, username: string, password: string) {
     this._user_update.run(username, password, uuid);
   }
-
-  /**
-   * @argument
-   */
   /**
    * @argument uuid
    * @description 查询uuid对应用户的容器记录
