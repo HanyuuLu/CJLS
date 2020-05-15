@@ -20,7 +20,7 @@ class Record {
       begin;
       create table if not exists container
         (
-          uuid      integer primary key,
+          uuid      integer primary key autoincrement,
           container string not null,
           start     integer not null,
           end       integer not null
@@ -43,8 +43,8 @@ class Record {
       `);
     this._container_grant = this.database.prepare(`
       insert into container 
-      (uuid,container,start,end) 
-      values(?,?,?,?)
+      (container,start,end) 
+      values(?,?,?)
       `);
     this._container_queryAll = this.database.prepare(`
       select *
@@ -85,8 +85,8 @@ class Record {
    * @argument password 用户密码哈希
    * @description 获得许可用户注册（初始化）
    */
-  registerUser(uuid: string, username: string, password: string) {
-    this.updateUser(uuid, username, password);
+  registerUser(username: string, password: string) {
+    return this._user_add.run(username, password);
   }
   /**
    * @argument uuid 用户uuid
@@ -95,6 +95,13 @@ class Record {
    */
   updateUser(uuid: string, username: string, password: string) {
     this._user_update.run(username, password, uuid);
+  }
+  /**
+   * @argument uuid 用户uuid
+   * @description 删除用户
+   */
+  deleteUser(uuid: string) {
+    this._user_delete.run(uuid);
   }
   /**
    * @argument uuid
