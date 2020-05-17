@@ -66,8 +66,8 @@ class Record {
     `);
     this._user_add = this.database.prepare(`
       insert into user
-      (uuid,username,role,access,lastused) values
-      (?,?,?,?,?);
+      (username,role,access6) values
+      ("未命名用户",0,"[]");
     `);
     this._user_update = this.database.prepare(`
       update user set
@@ -96,6 +96,22 @@ class Record {
   updateUser(uuid: string, username: string, password: string) {
     this._user_update.run(username, password, uuid);
   }
+  /**
+   * @argument uuid 用户uud
+   * @argument role 用户身份 0 普通用户 1 管理员
+   * @description 修改用户权限
+   */
+  modifyUser(uuid: string, role: number) {}
+  /**
+   * @argument number
+   * @description 批量注册用户
+   */
+  registerUser_Batch(count: number) {
+    return this.database.transaction((count) => {
+      this._user_add.run();
+    });
+  }
+
   /**
    * @argument uuid 用户uuid
    * @description 删除用户
