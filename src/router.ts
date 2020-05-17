@@ -98,7 +98,7 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    */
   server.post(`${userroot}/update`, SchemaUpdate, (req, res) => {
     console.log(req.body.token);
-    manager.
+    manager.updateUser(req.body.uuid, req.body.username, req.body.password);
     res.code(200).send({ info: "success" });
   });
   /**

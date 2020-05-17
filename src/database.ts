@@ -29,7 +29,7 @@ class Record {
         (
           uuid      integer primary key,
           password  string,
-          username  text,
+          username  string,
           role      integer not null default 0,
           access    string default '[]',
           lastused  integer
@@ -66,8 +66,8 @@ class Record {
     `);
     this._user_add = this.database.prepare(`
       insert into user
-      (username,role,access6) values
-      ("未命名用户",0,"[]");
+      (username) values
+      (?);
     `);
     this._user_update = this.database.prepare(`
       update user set
@@ -108,8 +108,13 @@ class Record {
    */
   registerUser_Batch(count: number) {
     return this.database.transaction((count) => {
-      this._user_add.run();
-    });
+      var res = Array();
+      for (var i = 0; i < count; ++i) {
+        var code = this._user_add.run();
+        res.push(code);
+      }
+      return res;
+    })(count);
   }
 
   /**

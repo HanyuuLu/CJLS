@@ -55,4 +55,10 @@ class Manager {
 }
 export default new Manager();
 console.log(Token.sign({ uuid: "test" }));
-`eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoidGVzdCIsImlhdCI6MTU4ODg0MTc3NywiZXhwIjoxNTg4OTI4MTc3fQ.i3lWsTICc32jfMYhojhFSjH9kCK5CrSLLxP7eUSaZ9g`;
+var token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoidGVzdCIsImlhdCI6MTU4OTc0NDczMSwiZXhwIjoxNTg5ODMxMTMxfQ.sm9PKONDToQpvbw8SqnrCh0TC_b5ZsF42pv0YYPP5xg`;
+try {
+  let res = Token.verify(token);
+  console.log(res);
+} catch (err) {
+  console.log(err.message);
+}

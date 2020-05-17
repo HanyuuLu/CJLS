@@ -17,11 +17,10 @@ class Container {
     }
     this.docker = new Docker();
     this.contianerList = [];
-    this.docker.listImages(function (err, info: Array<any>) {
+    this.docker.listImages(function(err, info: Array<any>) {
       if (err) {
         console.log(err.toString());
-      }
-      else {
+      } else {
         for (var i = 0; i < info.length; ++i) {
           for (var tag in info[i]["RepoTags"]) {
             if (info[i]["RepoTags"][tag] == container.imageName) {
@@ -32,12 +31,12 @@ class Container {
         }
       }
       console.warn(`image [${container.imageName}] don't exists, pulling...`);
-      container.docker.pull(container.imageName as string, function (
+      container.docker.pull(container.imageName as string, function(
         err: ExceptionInformation,
         info: Stream
       ) {
         if (err) {
-          throw err.toString();
+          console.log(err);
         }
         console.log(info);
         console.log(`pulling image [${container.imageName}] success`);
@@ -58,15 +57,25 @@ class Container {
     //   console.log(data?.toString());
     // });
     // this.docker.run(this.imageName,[],)
-    this.docker.run(this.imageName, [],
-      fs.createWriteStream('log.log'), (err: ExceptionInformation, data: Stream, container: Docker.Container) => {
+    this.docker.run(
+      this.imageName,
+      [],
+      fs.createWriteStream("log.log"),
+      (
+        err: ExceptionInformation,
+        data: Stream,
+        container: Docker.Container
+      ) => {
         container.remove();
-      })
-    this.docker.run('ubuntu', ['bash', '-c', 'uname -a'], process.stdout).then((data) => {
-      console.log(data[1].id);
-      console.log('a');
-      return data[1].remove();
-    });
+      }
+    );
+    this.docker
+      .run("ubuntu", ["bash", "-c", "uname -a"], process.stdout)
+      .then((data) => {
+        console.log(data[1].id);
+        console.log("a");
+        return data[1].remove();
+      });
     // this.docker.listContainers().then((e) => { console.log(e) })
   }
 }
