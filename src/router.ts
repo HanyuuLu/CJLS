@@ -86,7 +86,7 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    */
   server.post(`${userroot}/register`, SchemaRegister, (req, res) => {
     console.log(req.body.registercode);
-    manager.registerUser(
+    manager.userRegister(
       req.body.registercode,
       req.body.username,
       req.body.password
@@ -98,7 +98,7 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    */
   server.post(`${userroot}/update`, SchemaUpdate, (req, res) => {
     console.log(req.body.token);
-    manager.updateUser(req.body.uuid, req.body.username, req.body.password);
+    manager.userUpdate(req.body.uuid, req.body.username, req.body.password);
     res.code(200).send({ info: "success" });
   });
   /**
