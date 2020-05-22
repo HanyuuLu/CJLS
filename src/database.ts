@@ -110,7 +110,7 @@ class Record {
     return this.database.transaction((count) => {
       var res = Array();
       for (var i = 0; i < count; ++i) {
-        var code = this._user_add.run();
+        var code = this._user_add.run("unnamed");
         res.push(code);
       }
       return res;

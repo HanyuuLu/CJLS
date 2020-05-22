@@ -21,8 +21,13 @@ class Manager {
    * @returns 注册码列表
    */
   grantUser(token: string, count: number): Array<string> {
-    let src = Token.verify(token) as any;
-    return Array();
+    if (count > 0 && count < 65536) {
+      let src = Token.verify(token) as any;
+      let res = database.registerUser_Batch(count);
+      return res;
+    } else {
+      throw Error("request not vaild.");
+    }
   }
 
   updateUser(token: string, username: string, password: string) {
@@ -41,23 +46,16 @@ class Manager {
     database.gc();
   }
   fun() {
-    // let d = new data();
-    // d.queryContainer("1");
-    // for (let i = 0; i < 200; ++i) {
-    //   d.grantContainer((Math.random() * 100).toFixed(), "demo", 1000 * 60);
-    // }
-    // let res = d.queryAll();
-    // res.forEach((element) => {
-    //   console.log(element);
-    // });
     container.run();
   }
 }
-export default new Manager();
-console.log(Token.sign({ uuid: "test" }));
-var token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoidGVzdCIsImlhdCI6MTU4OTc0NDczMSwiZXhwIjoxNTg5ODMxMTMxfQ.sm9PKONDToQpvbw8SqnrCh0TC_b5ZsF42pv0YYPP5xg`;
+let manager = new Manager();
+export default manager;
+var token = Token.sign({ uuid: "test" });
+console.log(token);
+let res = Token.verify(token);
+manager.grantUser(token, 20);
 try {
-  let res = Token.verify(token);
   console.log(res);
 } catch (err) {
   console.log(err.message);
