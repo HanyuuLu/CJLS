@@ -71,11 +71,12 @@ class Record {
     `);
     this._user_queryByUUID = this.database.prepare(`
       select * from user
-      where uuid
+      where uuid=?;
     `);
     this._user_add = this.database.prepare(`
       insert into user
-      (username) values
+      (username)
+      values 
       (?);
     `);
     this._user_update = this.database.prepare(`
@@ -135,8 +136,12 @@ class Record {
    * @argument uuid 用户uuid
    * @argument password 用户密码哈希
    * @description 更新用户信息
+   * @throws usernameTooShort
    */
   userUpdate(uuid: string, username: string, password: string) {
+    if (username.length < 1) {
+      throw new Error("username too short");
+    }
     this._user_update.run(username, password, uuid);
   }
 
@@ -155,7 +160,7 @@ class Record {
     return this.database.transaction((count) => {
       var res = Array();
       for (var i = 0; i < count; ++i) {
-        var code = this._user_add.run("unnamed ");
+        var code = this._user_add.run("");
         res.push(code.lastInsertRowid);
       }
       return res;

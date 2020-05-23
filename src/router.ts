@@ -85,13 +85,17 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户注册账号
    */
   server.post(`${userroot}/register`, SchemaRegister, (req, res) => {
-    console.log(req.body.registercode);
-    manager.userRegister(
-      req.body.registercode,
-      req.body.username,
-      req.body.password
-    );
-    res.code(200).send({ info: "success:" });
+    try {
+      let s = manager.userRegister(
+        req.body.registercode,
+        req.body.username,
+        req.body.password
+      ) as any;
+      s.status = "success";
+      res.code(200).send(s);
+    } catch (e) {
+      res.code(404).send({ status: "failure", info: e.message });
+    }
   });
   /**
    * @event 用户更新用户信息
@@ -103,13 +107,16 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   });
   /**
    * @event 用户登录账号
+   * @todo 输出使用固定schmea
    */
   server.post(`${userroot}/login`, SchemaLogin, (req, res) => {
-    res.code(200).send({
-      info: "success",
-      token: "1234567890",
-      username: `${req.body.username}`,
-    });
+    try {
+      let s = manager.userLogin(req.body.username, req.body.password) as any;
+      s.status = "success";
+      res.code(200).send(s);
+    } catch (e) {
+      res.code(404).send({ status: "failed", info: e.message });
+    }
   });
   /**
    * @event 用户删除账号

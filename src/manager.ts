@@ -3,8 +3,9 @@ import Token from "./token";
 import { container } from "./container";
 class Manager {
   constructor() {
-    //功能测试
-    this.fun();
+    // console.log("manager is running");
+    // let token = this.userLogin("hanyuu", "123").token;
+    // this.userGrant(token, 1e7);
   }
   /**
    * @argument registercode 管理员分配的激活密钥
@@ -13,8 +14,17 @@ class Manager {
    * @description 用户使用管理员分配的激活密钥设置初始化账户
    */
   userRegister(registercode: string, username: string, password: string) {
-    let src = Token.verify(registercode) as { uuid: string };
-    database.userUpdate(src.uuid, username, password);
+    let src = Token.verify(registercode) as {
+      uuid: string;
+      account: string;
+      type: string;
+    };
+    let userInfo = this.userInfo(src.uuid);
+    if (userInfo.username != "") {
+      throw new Error("could not apply operation to this account");
+    }
+    database.userUpdate(src.account, username, password);
+    return this.userLogin(username, password);
   }
   /**
    * @argument token 管理员令牌
@@ -22,7 +32,7 @@ class Manager {
    * @returns 注册码列表
    */
   userGrant(token: string, count: number): Array<string> {
-    if (count > 0 && count < 65536) {
+    if (count > 0) {
       let src = Token.verify(token) as any;
       let res = database.userRegister_Batch(count);
       return res;
@@ -46,14 +56,58 @@ class Manager {
     }
   }
   /**
-   *
+   * @argument username 用户名（用于登录）
+   * @argument password 密码哈希
+   * @returns loginSchema
+   * @description 用户登录，返回用户信息
+   * @throws WrongUsernameOrPassword
+   * @throws InvaildToken, noSuchUser
    */
   userLogin(username: string, password: string) {
     let res = database.userQuery_username(username);
+    if (res == null) {
+      throw new Error("no such user");
+    }
     if (password == res.password) {
-      return Token.sign({ uuid: res.uuid, type: "login" }, "30d");
+      return {
+        username: res.username,
+        role: res.role,
+        access: res.access,
+        lastused: res.lastused,
+        token: Token.sign(
+          {
+            uuid: res.uuid,
+            type: "login",
+          },
+          "30d"
+        ),
+      };
     } else {
       throw new Error("wrong username or password");
+    }
+  }
+
+  /**
+   *
+   */
+  userInfo(uuid: string) {
+    let res = database.userQuery_uuid(uuid);
+    if (res == null) {
+      throw new Error("no such user");
+    }
+    delete res.password;
+    return res;
+  }
+
+  /**
+   *
+   */
+  userQuery(uuid: string) {
+    let res = database.userQuery_uuid(uuid);
+    if (res != null) {
+      return { uuid: res.uuid, username: res.username, lastused: res.lastused };
+    } else {
+      return { error: "no such user" };
     }
   }
   /**
@@ -73,12 +127,6 @@ class Manager {
   }
   gc() {
     database.gc();
-  }
-  fun() {
-    // container.run();
-    let res = this.userLogin("hanyuu", "123");
-    console.log(res);
-    console.log(Token.verify(res));
   }
 }
 let manager = new Manager();
