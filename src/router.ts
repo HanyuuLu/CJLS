@@ -75,6 +75,9 @@ const SchemaServer = {
   },
 };
 export async function routes(server: fastify.FastifyInstance, options: any) {
+  server.get("/test", async (request, reply) => {
+    reply.send(manager.userLogin("hanyuu", "123"));
+  });
   /**
    * @event 测试存活
    */
@@ -101,9 +104,12 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户更新用户信息
    */
   server.post(`${userroot}/update`, SchemaUpdate, (req, res) => {
-    console.log(req.body.token);
-    manager.userUpdate(req.body.uuid, req.body.username, req.body.password);
-    res.code(200).send({ info: "success" });
+    try {
+      manager.userUpdate(req.body.uuid, req.body.username, req.body.password);
+      res.code(200).send({ info: "success" });
+    } catch (e) {
+      res.code(403).send({ status: "failure", info: e.message });
+    }
   });
   /**
    * @event 用户登录账号

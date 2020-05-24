@@ -5,7 +5,7 @@ class Manager {
   constructor() {
     // console.log("manager is running");
     // let token = this.userLogin("hanyuu", "123").token;
-    // this.userGrant(token, 1e7);
+    // this.userGrant(token, 1e7); 
   }
   /**
    * @argument registercode 管理员分配的激活密钥
