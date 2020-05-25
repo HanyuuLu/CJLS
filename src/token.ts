@@ -21,6 +21,7 @@ class Token {
       }
     }
   }
+
   /**
    * @argument load 载体
    * @argument expire 超时时间
@@ -29,6 +30,7 @@ class Token {
   sign(load: object, expire: string = "24h") {
     return jwt.sign(load, this.secrect, { expiresIn: expire });
   }
+
   /**
    * @argument src 待验证的token
    * @description 验证token

@@ -5,8 +5,9 @@ class Manager {
   constructor() {
     // console.log("manager is running");
     // let token = this.userLogin("hanyuu", "123").token;
-    // this.userGrant(token, 1e7); 
+    // this.userGrant(token, 1e7);
   }
+
   /**
    * @argument registercode 管理员分配的激活密钥
    * @argument username 用户选择的用户名
@@ -26,6 +27,7 @@ class Manager {
     database.userUpdate(src.account, username, password);
     return this.userLogin(username, password);
   }
+
   /**
    * @argument token 管理员令牌
    * @argument count 期望新建的账户个数
@@ -40,6 +42,7 @@ class Manager {
       throw new Error("request not vaild.");
     }
   }
+
   /**
    * @argument token 用户令牌
    * @argument username 新的用户名
@@ -55,6 +58,26 @@ class Manager {
       throw e;
     }
   }
+
+  /**
+   * @argument token 管理员登录token
+   * @returns token 管理令牌
+   * @description 管理员使用登陆令牌换取
+   */
+  userAdmin(token: string) {
+    try {
+      let src = Token.verify(token) as { uuid: string };
+      let usr = database.userQuery_uuid(src.uuid);
+      if (usr.role == 1) {
+        return Token.sign({ uuid: src.uuid, type: "admin" }, "2h");
+      } else {
+        throw new Error("no permissions");
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
   /**
    * @argument username 用户名（用于登录）
    * @argument password 密码哈希
@@ -110,6 +133,7 @@ class Manager {
       return { error: "no such user" };
     }
   }
+
   /**
    * @argument token 用户令牌
    * @description 用户创建新实例
