@@ -178,12 +178,13 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户查看其他用户信息
    */
   server.get(`${userroot}/u/:uuid`, (req, res) => {
-    console.log(req.params);
-    res.code(200).send({
-      uuid: req.params.uuid,
-      username: "InuiToko",
-      role: "2",
-    });
+    try {
+      let s = manager.userQuery(req.params.uuid) as any;
+      s.status = "success";
+      res.code(200).send(s);
+    } catch (e) {
+      res.code(403).send({ status: "failure", info: e.message });
+    }
   });
 
   /**
@@ -202,13 +203,13 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
       },
     },
     (req, res) => {
-      res.code(200).send({
-        uuid: `${req.body.token}对应的uuid`,
-        username: "InuiToko",
-        role: "2",
-        access: `["course1","course2"]`,
-        lastused: 3824839275,
-      });
+      try {
+        let s = manager.userSelfInfo(req.body.token) as any;
+        s.status = "success";
+        res.code(200).send(s);
+      } catch (e) {
+        res.code(403).send({ status: "failure", info: e.message });
+      }
     }
   );
 

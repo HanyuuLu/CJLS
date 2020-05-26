@@ -123,7 +123,7 @@ class Manager {
   }
 
   /**
-   *
+   * @description 用户公开信息
    */
   userQuery(uuid: string) {
     let res = database.userQuery_uuid(uuid);
@@ -133,7 +133,23 @@ class Manager {
       return { error: "no such user" };
     }
   }
-
+  /**
+   * @description 用户自身信息
+   */
+  userSelfInfo(token: string) {
+    let uuid = (Token.verify(token) as { uuid: string }).uuid;
+    let res = database.userQuery_uuid(uuid);
+    if (res != null) {
+      return {
+        uuid: res.uuid,
+        username: res.username,
+        access: res.access,
+        lastused: res.lastused,
+      };
+    } else {
+      return { error: "no such user" };
+    }
+  }
   /**
    * @argument token 用户令牌
    * @description 用户创建新实例
