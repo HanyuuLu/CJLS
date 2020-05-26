@@ -135,8 +135,8 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
         body: {
           type: "object",
           properties: {
-            token: "string",
-            count: "number",
+            token: { type: "string" },
+            count: { type: "string" },
           },
         },
       },
