@@ -111,7 +111,8 @@ class Manager {
   }
 
   /**
-   *
+   * @argument uuid 用户令牌
+   * @description 获取个人信息
    */
   userInfo(uuid: string) {
     let res = database.userQuery_uuid(uuid);
@@ -123,6 +124,7 @@ class Manager {
   }
 
   /**
+   * @argument uuid 用户令牌
    * @description 用户公开信息
    */
   userQuery(uuid: string) {
@@ -134,6 +136,7 @@ class Manager {
     }
   }
   /**
+   * @argument token 用户令牌
    * @description 用户自身信息
    */
   userSelfInfo(token: string) {
@@ -162,9 +165,16 @@ class Manager {
     database.containerGrant(uuid, "111", 1000);
     return database.containerQuery(uuid);
   }
+  /**
+   * @argument uuid 用户令牌
+   * @description 用户查询实例地址
+   */
   queryContainer(uuid: string) {
     return database.containerQuery(uuid);
   }
+  /**
+   * @description 清理多余记录
+   */
   gc() {
     database.gc();
   }

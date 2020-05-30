@@ -12,7 +12,7 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 测试存活
    */
   server.get("/", async (request, reply) => {
-    return { info: "alive" };
+    return { info: "alive~", version: "0.0.1alpha" };
   });
 
   /**
