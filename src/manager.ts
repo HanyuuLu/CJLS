@@ -114,6 +114,18 @@ class Manager {
    * @argument uuid 用户令牌
    * @description 获取个人信息
    */
+  userDelete(token: string, uuid: string, password: string = "") {
+    let t = Token.verify(token) as any;
+    let u = this.userInfo(t.uuid);
+    if (
+      (u.role == 1 && t.type == "admin") ||
+      (u.role == 0 && password == u.password)
+    ) {
+      database.userDelete(uuid);
+    } else {
+      throw new Error("invaild request");
+    }
+  }
   userInfo(uuid: string) {
     let res = database.userQuery_uuid(uuid);
     if (res == null) {
@@ -135,6 +147,10 @@ class Manager {
       return { error: "no such user" };
     }
   }
+  /**
+   * @argument token 用户令牌/管理员令牌
+   * @description 用户/管理员删除账户
+   */
   /**
    * @argument token 用户令牌
    * @description 用户自身信息
