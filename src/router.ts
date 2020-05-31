@@ -217,11 +217,12 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
    * @event 用户获取（开启/重新获取）沙箱
    */
   server.get(`${containerroot}/:token`, (req, res) => {
-    res.code(200).send({
-      address: "https://demo.com/skjdfasdkfh",
-      token: `${req.params.token}`,
-      starttime: 298342,
-      endtime: 298374,
-    });
+    try {
+      let s = manager.queryContainer(req.params.token) as any;
+      s.status = "success";
+      res.code(200).send(s);
+    } catch (e) {
+      res.code(403).send({ status: "failure", info: e.message });
+    }
   });
 }
