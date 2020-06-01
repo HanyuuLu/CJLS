@@ -75,7 +75,6 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
 
   /**
    * @event 用户登录账号
-   * @todo 输出使用固定schmea
    */
   server.post(
     `${userroot}/login`,
@@ -118,7 +117,10 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
     },
     (req, ret) => {
       try {
-        ret.code(200).send(manager.userAdmin(req.body.token));
+        let r = new Object() as { token: string; status: string };
+        r.token = manager.userAdmin(req.body.token) as any;
+        r.status = "success";
+        ret.code(200).send(r);
       } catch (e) {
         ret.code(403).send({ status: "failure", info: e.message });
       }

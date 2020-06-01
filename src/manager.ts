@@ -33,11 +33,25 @@ class Manager {
    * @argument count 期望新建的账户个数
    * @returns 注册码列表
    */
-  userGrant(token: string, count: number): Array<string> {
+  userGrant(
+    token: string,
+    count: number
+  ): { tokenList: Array<string>; status: string } {
     if (count > 0) {
       let src = Token.verify(token) as any;
-      let res = database.userRegister_Batch(count);
-      return res;
+      if (src.type === "admin") {
+        let id = database.userRegister_Batch(count);
+        let r = new Array();
+        for (var i in id) {
+          r.push(Token.sign({ uuid: i, type: "register" }, "1y"));
+        }
+        let res = new Object() as { tokenList: Array<string>; status: string };
+        res.tokenList = r;
+        res.status = "success";
+        return res;
+      } else {
+        throw new Error("permission denied.");
+      }
     } else {
       throw new Error("request not vaild.");
     }
