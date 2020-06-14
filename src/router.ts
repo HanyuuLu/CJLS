@@ -163,16 +163,26 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
         body: {
           type: "object",
           properties: {
-            token: { type: "string" },
             uuid: { tpye: "string" },
+            token: { type: "string" }
           },
         },
       },
     },
-    (req, res) => {
-      res.code(200).send({
-        info: "success",
-      });
+    (req, ret) => {
+      try {
+        let res = manager.userDelete(
+          req.body.token,
+          req.body.uuid
+        ) as any;
+        res.status = "success";
+        ret.code(200).send(res);
+      } catch (e) {
+        ret.code(403).send({
+          status: "failure",
+          info: e.message,
+        });
+      }
     }
   );
 

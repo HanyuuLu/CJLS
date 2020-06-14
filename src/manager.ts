@@ -24,7 +24,7 @@ class Manager {
     if (userInfo.username != "") {
       throw new Error("could not apply operation to this account");
     }
-    database.userUpdate(src.account, username, password);
+    database.userUpdate(src.uuid, username, password);
     return this.userLogin(username, password);
   }
 
@@ -43,7 +43,7 @@ class Manager {
         let id = database.userRegister_Batch(count);
         let r = new Array();
         for (var i in id) {
-          r.push(Token.sign({ uuid: i, type: "register" }, "1y"));
+          r.push(Token.sign({ uuid: id[i], type: "register" }, "1y"));
         }
         let res = new Object() as { tokenList: Array<string>; status: string };
         res.tokenList = r;
@@ -125,17 +125,18 @@ class Manager {
   }
 
   /**
-   * @argument uuid 用户令牌
-   * @description 获取个人信息
+   * @argument token 管理员令牌
+   * @argument uuid 待删除账户uuid
+   * @description  管理员删除账户
    */
-  userDelete(token: string, uuid: string, password: string = "") {
+  userDelete(token: string, uuid: string) {
     let t = Token.verify(token) as any;
     let u = this.userInfo(t.uuid);
     if (
-      (u.role == 1 && t.type == "admin") ||
-      (u.role == 0 && password == u.password)
+      (u.role == 1 && t.type == "admin")
     ) {
       database.userDelete(uuid);
+      return { uuid: uuid };
     } else {
       throw new Error("invaild request");
     }
