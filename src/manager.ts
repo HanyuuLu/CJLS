@@ -190,18 +190,18 @@ class Manager {
    * @returns 新实例地址
    * @throws InvaildToken, ResourceUsed
    */
-  grantNewContainer(token: string) {
-    let src = Token.verify(token) as { uuid: string };
-    let uuid = src.uuid;
-    database.containerGrant(uuid, "111", 1000);
+  grantNewContainer(uuid: string) {
+    database.containerGrant(uuid, "111", 1000*60*60);
     return database.containerQuery(uuid);
   }
   /**
    * @argument uuid 用户令牌
    * @description 用户查询实例地址
    */
-  queryContainer(uuid: string) {
-    return database.containerQuery(uuid);
+  queryContainer(token: string) {
+    let uuid = (Token.verify(token) as { uuid:string }).uuid;
+    let rec = database.containerQuery(uuid) ?? this.grantNewContainer(uuid);
+    return rec;
   }
   /**
    * @description 清理多余记录

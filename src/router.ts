@@ -4,10 +4,6 @@ const userroot = "/api/user";
 const containerroot = "/api/server";
 
 export async function routes(server: fastify.FastifyInstance, options: any) {
-  server.get("/test", async (req, rep) => {
-    rep.send(manager.userLogin("hanyuu", "123"));
-  });
-
   /**
    * @event 测试存活
    */
@@ -164,17 +160,14 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
           type: "object",
           properties: {
             uuid: { tpye: "string" },
-            token: { type: "string" }
+            token: { type: "string" },
           },
         },
       },
     },
     (req, ret) => {
       try {
-        let res = manager.userDelete(
-          req.body.token,
-          req.body.uuid
-        ) as any;
+        let res = manager.userDelete(req.body.token, req.body.uuid) as any;
         res.status = "success";
         ret.code(200).send(res);
       } catch (e) {
@@ -228,13 +221,26 @@ export async function routes(server: fastify.FastifyInstance, options: any) {
   /**
    * @event 用户获取（开启/重新获取）沙箱
    */
-  server.get(`${containerroot}/:token`, (req, res) => {
-    try {
-      let s = manager.queryContainer(req.params.token) as any;
-      s.status = "success";
-      res.code(200).send(s);
-    } catch (e) {
-      res.code(403).send({ status: "failure", info: e.message });
+  server.post(
+    `${containerroot}`,
+    {
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            token: { type: "string" },
+          },
+        },
+      },
+    },
+    (req, res) => {
+      try {
+        let s = manager.queryContainer(req.body.token) as any;
+        s.status = "success";
+        res.code(200).send(s);
+      } catch (e) {
+        res.code(403).send({ status: "failure", info: e.message });
+      }
     }
-  });
+  );
 }
