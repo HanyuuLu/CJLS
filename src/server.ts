@@ -1,8 +1,8 @@
 import Fastify from "fastify";
 import { routes } from "./router";
 const PORT = 80;
-const ADDRESS = "0.0.0.0";
-const server = Fastify({ logger: true });
+const ADDRESS = "::";
+const server = Fastify({ logger: false });
 
 server.register(routes);
 server.listen(PORT, ADDRESS, (err, address) => {

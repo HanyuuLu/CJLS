@@ -3,9 +3,7 @@ import Token from "./token";
 import { container } from "./container";
 class Manager {
   constructor() {
-    // console.log("manager is running");
-    // let token = this.userLogin("hanyuu", "123").token;
-    // this.userGrant(token, 1e7);
+    console.log("manager is running");
   }
 
   /**
@@ -191,7 +189,9 @@ class Manager {
    * @throws InvaildToken, ResourceUsed
    */
   grantNewContainer(uuid: string) {
-    database.containerGrant(uuid, "111", 1000*60*60);
+    container.newContainer(uuid);
+    database.containerGrant(uuid, "111", 1000 * 60 * 60);
+    
     return database.containerQuery(uuid);
   }
   /**

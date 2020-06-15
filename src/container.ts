@@ -43,6 +43,22 @@ class Container {
       });
     });
   }
+  newContainer(uuid:string) {
+    this.docker.run(
+      this.imageName,
+      [],
+      fs.createWriteStream("log.log"),
+      {name:`C${uuid}`},
+      (
+        err: ExceptionInformation,
+        data: Stream,
+        container: Docker.Container
+      ) => {
+        if (err) { console.error(err); return; }
+        console.log(data);
+      }
+    );
+  }
   run() {
     // this.contianerList.push(this.docker.getContainer("4d3e6a4e7bf8"));
     // this.contianerList[0].start(function(err, data) {
@@ -57,25 +73,25 @@ class Container {
     //   console.log(data?.toString());
     // });
     // this.docker.run(this.imageName,[],)
-    this.docker.run(
-      this.imageName,
-      [],
-      fs.createWriteStream("log.log"),
-      (
-        err: ExceptionInformation,
-        data: Stream,
-        container: Docker.Container
-      ) => {
-        container.remove();
-      }
-    );
-    this.docker
-      .run("ubuntu", ["bash", "-c", "uname -a"], process.stdout)
-      .then((data) => {
-        console.log(data[1].id);
-        console.log("a");
-        return data[1].remove();
-      });
+    // this.docker.run(
+    //   this.imageName,
+    //   [],
+    //   fs.createWriteStream("log.log"),
+    //   (
+    //     err: ExceptionInformation,
+    //     data: Stream,
+    //     container: Docker.Container
+    //   ) => {
+    //     container.remove();
+    //   }
+    // );
+    // this.docker
+    //   .run("ubuntu", ["bash", "-c", "uname -a"], process.stdout)
+    //   .then((data) => {
+    //     console.log(data[1].id);
+    //     console.log("a");
+    //     return data[1].remove();
+    //   });
     // this.docker.listContainers().then((e) => { console.log(e) })
   }
 }
